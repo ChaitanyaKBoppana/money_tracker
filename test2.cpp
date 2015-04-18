@@ -24,7 +24,7 @@ void Clr(){
 void Balance_change(int input){
     //first the balance is read and stored in the variable prev_balance
     int prev_balance=0;
-    int sal,sal_date,check1=0,check2=0;
+    int sal,sal_date;
     char reader[10],balance[5],salary[5],date1[5];
     FILE* read;
     read=fopen("details.txt","r");
@@ -129,95 +129,6 @@ void Set_salary(){
             fclose(write);
         }
     return;
-}
-
-
-void Check_salary(){
-    int sal,sal_date,check1=0,check2=1;
-    char input[10],balance[5],salary[5],date1[5];
-    char date[3],month[3],year[3],source[20],amount[3];
-    int ch_month,ch_year;
-    char ch_name[]="salary";
-    time_t rawtime;
-    time(&rawtime);
-    struct tm* timeinfo;
-    timeinfo=localtime(&rawtime);
-    int curr_month;
-    curr_month=timeinfo->tm_mon+1;
-    int curr_year;
-    curr_year=timeinfo->tm_year+1900;
-    FILE* salary_check;
-    salary_check=fopen("income.txt","r");
-    if(salary_check==NULL)
-        {
-            cout<<"File Error"<<endl;
-            return;
-        }
-    else
-        {
-            while(fgets(input,40,salary_check))
-                {
-                    int i=0,j=0;
-                    while((date[j]=input[i])!=','){i++; j++;}
-                    date[j]='\0'; j=0; i++;
-                    while((month[j]=input[i])!=','){i++; j++;}
-                    month[j]='\0'; j=0; i++;
-                    sscanf(month,"%i",&ch_month);
-                    while((year[j]=input[i])!=','){i++; j++;}
-                    year[j]='\0'; j=0; i++;
-                    sscanf(year,"%i",&ch_year);
-                    while((source[j]=input[i])!=','){i++; j++;}
-                    source[j]='\0';j=0; i++;
-                    while((amount[j]=input[i])!='\0'){i++; j++;}
-                    amount[j]='\0';
-                    if(curr_month==ch_month&&curr_year==ch_year&&strcmp(source,ch_name)==0){check2=0;}
-                }
-            fclose(salary_check);
-        }
-    FILE* read;
-    read=fopen("details.txt","r");
-    if(read==NULL)
-        {
-            cout<<"File error"<<endl;
-            return;
-        }
-    else
-        {
-            fgets(input,10,read);
-            int k=0;
-            while((balance[k]=input[k])!='\n'){k++;}
-            balance[k]='\0';
-            int j=0,i=0;
-            if(fgets(input,10,read))
-                {
-                    while((salary[j]=input[i])!=','){i++;j++;}
-                    salary[j]='\0';j=0;i++;
-                    sscanf(salary,"%d",&sal);
-                    while((date1[j]=input[i])!='\0'){i++;j++;}
-                    date1[j]='\0';
-                    sscanf(date1,"%i",&sal_date);
-                }
-            else check1=1;
-            fclose(read);
-        }
-    if(check1){return;}
-    if(check2)
-        {
-            FILE* salary_check;
-            salary_check=fopen("income.txt","a");
-            if(salary_check==NULL)
-                {
-                    cout<<"File Error"<<endl;
-                    return;
-                }
-            else
-                {
-                    fprintf(salary_check,"%i,%i,%i,%s,%d\n",sal_date,curr_month,curr_year,ch_name,sal);
-                    cout<<"Salary added for this month"<<endl;
-                    Balance_change(sal);
-                    fclose(salary_check);
-                }
-        }
 }
 
 
@@ -1105,17 +1016,17 @@ void Loan(){
                                                             sscanf(source,"%s",source1);
                                                             while((amount[j]=input[i])!=','){i++; j++;}
                                                             amount[j]='\0'; j=0; i++;
+                                                            sscanf(amount,"%d",&amount1);
                                                             while((date[j]=input[i])!=','){i++; j++;}
                                                             date[j]='\0'; j=0; i++;
+                                                            sscanf(date,"%i",&date1);
                                                             while((month[j]=input[i])!=','){i++; j++;}
                                                             month[j]='\0';j=0; i++;
+                                                            sscanf(month,"%i",&month1);
                                                             while((year[j]=input[i])!='\0'){i++; j++;}
                                                             year[j]='\0';
-                                                            if(strcmp(source1,clear_source)==0){continue;}
-                                                            sscanf(amount,"%d",&amount1);
-                                                            sscanf(date,"%i",&date1);
-                                                            sscanf(month,"%i",&month1);
                                                             sscanf(year,"%i",&year1);
+                                                            if(strcmp(source1,clear_source)==0){continue;}
                                                             fprintf(file2,"%s,%d,%i,%i,%i\n",source1,amount1,date1,month1,year1);
                                                         }
                                                     fclose(file1);
@@ -1255,6 +1166,98 @@ void Loan(){
 }//closing functionality
 
 
+void Check_salary(){
+    int sal,sal_date,check2=1;
+    char input[10],balance[5],salary[5],date1[5];
+    char date[3],month[3],year[3],source[20],amount[3],output[20];
+    int ch_month,ch_year;
+    char ch_name[]="salary";
+    time_t rawtime;
+    time(&rawtime);
+    struct tm* timeinfo;
+    timeinfo=localtime(&rawtime);
+    int curr_month;
+    curr_month=timeinfo->tm_mon+1;
+    int curr_year;
+    curr_year=timeinfo->tm_year+1900;
+    FILE* salary_check;
+    salary_check=fopen("income.txt","r");
+    if(salary_check==NULL)
+        {
+            cout<<"File Error"<<endl;
+            return;
+        }
+    else
+        {
+            while(fgets(input,40,salary_check))
+                {
+                    int i=0,j=0;
+                    while((date[j]=input[i])!=','){i++; j++;}
+                    date[j]='\0'; j=0; i++;
+                    while((month[j]=input[i])!=','){i++; j++;}
+                    month[j]='\0'; j=0; i++;
+                    sscanf(month,"%i",&ch_month);
+                    while((year[j]=input[i])!=','){i++; j++;}
+                    year[j]='\0'; j=0; i++;
+                    sscanf(year,"%i",&ch_year);
+                    while((source[j]=input[i])!=','){i++; j++;}
+                    source[j]='\0';j=0; i++;
+                    sscanf(source,"%s",output);
+                    while((amount[j]=input[i])!='\0'){i++; j++;}
+                    amount[j]='\0';
+                    if(curr_month==ch_month&&curr_year==ch_year&&strcmp(output,ch_name)==0){check2=0;return;}
+                }
+            fclose(salary_check);
+        }
+    int check1=0;
+    FILE* read;
+    read=fopen("details.txt","r");
+    if(read==NULL)
+        {
+            cout<<"File error"<<endl;
+            return;
+        }
+    else
+        {
+            fgets(input,10,read);
+            int k=0;
+            while((balance[k]=input[k])!='\n'){k++;}
+            balance[k]='\0';
+            int j=0,i=0;
+            if(fgets(input,10,read))
+                {
+                    while((salary[j]=input[i])!=','){i++;j++;}
+                    salary[j]='\0';j=0;i++;
+                    sscanf(salary,"%d",&sal);
+                    while((date1[j]=input[i])!='\0'){i++;j++;}
+                    date1[j]='\0';
+                    sscanf(date1,"%i",&sal_date);
+                }
+            else check1=1;
+            fclose(read);
+        }
+    if(check1){return;}
+    if(check2)
+        {
+            FILE* salary_check;
+            salary_check=fopen("income.txt","a");
+            if(salary_check==NULL)
+                {
+                    cout<<"File Error"<<endl;
+                    return;
+                }
+            else
+                {
+                    fprintf(salary_check,"%i,%i,%i,%s,%d\n",sal_date,curr_month,curr_year,ch_name,sal);
+                    cout<<"Salary added for this month"<<endl;
+                    Balance_change(sal);
+                    fclose(salary_check);
+                }
+        }
+}
+
+
+
 //Function for the home screen
 void main_screen(){
     //Header text for visual appeal
@@ -1340,5 +1343,3 @@ int main(){
     Check_salary();//To check if salary for this month is added
     main_screen();//calling for home screen
 }
-# money_tracker
-#money_tracker
